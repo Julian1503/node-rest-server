@@ -11,6 +11,6 @@ if(process.env.NODE_ENV==='dev'){
 }
 else{
 
-    urlDB ='mongodb+srv://paidinfull:Q6qDxTNgOPOlxkkl@cluster0.fxisk.mongodb.net/cafe?retryWrites=true&w=majority';
+    urlDB =process.env.MONGO_URI;
 }
 process.env.URLDB = urlDB;
