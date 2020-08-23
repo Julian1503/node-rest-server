@@ -88,12 +88,12 @@ app.get("/usuario/:id",verificarToken,(req,res)=>{
 });
 
 
-app.put("/usuario/:id",[verificarToken, verificarAdminRole],(req,res)=>{
+app.put("/usuario/:id",[verificarToken],(req,res)=>{
     let id = req.params.id;
 
     let body = _.pick(req.body,["nombre","email","img","role","estado"]); 
 
-    let user = Usuario.findByIdAndUpdate(id,body,{new:true, runValidators: true}, (err,usuarioDB)=>{
+    let user = Usuario.findByIdAndUpdate(id,body,{new:true, context:"query",runValidators: true}, (err,usuarioDB)=>{
         if(err){
             return res.status(400).json({
                 ok:false,
@@ -107,7 +107,7 @@ app.put("/usuario/:id",[verificarToken, verificarAdminRole],(req,res)=>{
     });
 });
 
-app.post("/usuario",[verificarToken, verificarAdminRole],(req,res)=>{
+app.post("/usuario",[verificarToken],(req,res)=>{
     let body = req.body;
 
     let usuario = new Usuario({
@@ -119,7 +119,7 @@ app.post("/usuario",[verificarToken, verificarAdminRole],(req,res)=>{
     usuario.save((err,usuarioDB)=>
     {
         if(err){
-            return res.status(400).json({
+            return res.status(500).json({
                 ok:false,
                 err
             });

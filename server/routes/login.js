@@ -10,7 +10,7 @@ app.post('/login',(req,res)=>{
     let body = req.body;
     Usuario.findOne({email:body.email},(err,usuarioDb)=>{
         if(err){
-            return res.status(400).json({
+            return res.status(500).json({
                 ok:false,
                 err
             });
