@@ -1,6 +1,5 @@
 require('./config/config');
 
-
 const express = require("express");
 const dp = require("body-parser");
 const mongoose = require("mongoose");
@@ -11,7 +10,7 @@ app.use(dp.urlencoded({ extended: false }));
 
 app.use(dp.json());
 
-app.use(require('./routes/user'));
+app.use(require('./routes/index'));
 
 mongoose.connect(process.env.URLDB,
     {

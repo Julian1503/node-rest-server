@@ -4,10 +4,10 @@ const bcrypt = require("bcrypt");
 const _ = require("underscore");
 
 const app = express();
-
+const { verificarToken, verificarAdminRole } = require("../middlewares/authentication");
 let Usuario = require("../models/user");
 
-app.get("/usuario",(req,res)=>{
+app.get("/usuario", verificarToken, (req,res)=>{
 
     let desde = Number(req.query.desde) || 0;
     let limite = Number(req.query.limite) || 5;
@@ -17,7 +17,7 @@ app.get("/usuario",(req,res)=>{
     .limit(limite)
     .exec((err,usuarios)=>{
         if (err){
-            res.status(400)
+            return res.status(400)
             .json({
                 ok:false,
                 err
@@ -26,13 +26,13 @@ app.get("/usuario",(req,res)=>{
        
             Usuario.countDocuments(filtro,(err,conteo)=>{
                 if (err){
-                    res.status(400)
+                    return res.status(400)
                     .json({
                         ok:false,
                         err
                     });
                 }
-                res.json({
+                return res.json({
                     ok:true,
                     usuarios,
                     cuantos:conteo
@@ -41,7 +41,7 @@ app.get("/usuario",(req,res)=>{
     });
 });
 
-app.delete("/usuario/:id",(req,res)=>{
+app.delete("/usuario/:id",[verificarToken, verificarAdminRole],(req,res)=>{
     let id = req.params.id;
     Usuario.findByIdAndUpdate(id,{ estado:false },{new:true, runValidators: true},(err,usuarioDB)=>{
         if(err){
@@ -64,7 +64,7 @@ app.delete("/usuario/:id",(req,res)=>{
     });
 });
 
-app.get("/usuario/:id",(req,res)=>{
+app.get("/usuario/:id",verificarToken,(req,res)=>{
     let id = req.params.id;
 
     Usuario.findById(id, (err,usuarioDB)=>{
@@ -80,7 +80,7 @@ app.get("/usuario/:id",(req,res)=>{
                 err: "No se encontro el usuario"
             }); 
         }
-        res.json({
+        return res.json({
             ok:true,
             usuario: usuarioDB
         });
@@ -88,7 +88,7 @@ app.get("/usuario/:id",(req,res)=>{
 });
 
 
-app.put("/usuario/:id",(req,res)=>{
+app.put("/usuario/:id",[verificarToken, verificarAdminRole],(req,res)=>{
     let id = req.params.id;
 
     let body = _.pick(req.body,["nombre","email","img","role","estado"]); 
@@ -100,14 +100,14 @@ app.put("/usuario/:id",(req,res)=>{
                 err
             });
         }
-        res.json({
+        return res.json({
             ok:true,
             usuario: usuarioDB
         });
     });
 });
 
-app.post("/usuario",(req,res)=>{
+app.post("/usuario",[verificarToken, verificarAdminRole],(req,res)=>{
     let body = req.body;
 
     let usuario = new Usuario({
@@ -125,7 +125,7 @@ app.post("/usuario",(req,res)=>{
             });
         }
 
-        res.json({ok:true,
+        return res.json({ok:true,
         usuario: usuarioDB});
     });
 });
