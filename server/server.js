@@ -14,7 +14,7 @@ app.use(dp.json());
 app.use(require('./routes/user'));
 
 app.get("/", (req, res) => {
-    res.json({ "mensaje": "Hola mundo" });
+    res.json({ "mensaje": process.env.NODE_ENV });
 });
 
 

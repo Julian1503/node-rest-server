@@ -24,7 +24,7 @@ app.get("/usuario",(req,res)=>{
             });
         }
        
-            Usuario.count(filtro,(err,conteo)=>{
+            Usuario.countDocuments(filtro,(err,conteo)=>{
                 if (err){
                     res.status(400)
                     .json({
